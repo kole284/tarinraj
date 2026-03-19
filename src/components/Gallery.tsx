@@ -16,18 +16,29 @@ function getGalleryImages(): string[] {
 
 export default function Gallery() {
   const images = getGalleryImages();
+  const previewImages = images.slice(0, 6);
 
   return (
-    <section id="galerija" className="py-24 bg-white">
+    <section
+      id="galerija"
+      className="py-24 bg-linear-to-b from-[#f7fbf8] via-[#ffffff] to-[#f5f8f6]"
+    >
       <div className="max-w-6xl mx-auto px-6">
         {/* Heading */}
-        <div className="mb-14">
+        <div className="mb-14 flex items-end justify-between gap-6">
+          <div>
           <p className="text-[#2d7a52] uppercase tracking-[0.2em] text-xs font-semibold mb-3">
             Galerija
           </p>
           <h2 className="text-4xl md:text-5xl font-light text-[#1a1a1a]">
             Prizori sa imanja
           </h2>
+          </div>
+          {images.length > 0 && (
+            <p className="hidden sm:block text-sm text-[#6b7280]">
+              {images.length} fotografija
+            </p>
+          )}
         </div>
 
         {images.length === 0 ? (
@@ -36,7 +47,7 @@ export default function Gallery() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-[#e8f5ee] to-[#ede9f8] flex flex-col items-center justify-center gap-2 text-[#9ca3af]"
+                className="aspect-4/3 rounded-2xl border border-[#e2e8e3] bg-linear-to-br from-[#eaf6ef] to-[#f4f1e8] flex flex-col items-center justify-center gap-2 text-[#9ca3af]"
               >
                 <svg
                   width="32"
@@ -57,29 +68,148 @@ export default function Gallery() {
             ))}
           </div>
         ) : (
-          /* Masonry-style responsive grid */
-          <div className="columns-2 md:columns-3 gap-4 space-y-4">
-            {images.map((src, i) => (
-              <div
-                key={src}
-                className="break-inside-avoid rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
-              >
-                <Image
-                  src={src}
-                  alt={`Tarin raj – slika ${i + 1}`}
-                  width={800}
-                  height={600}
-                  className="w-full h-auto object-cover"
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                />
-              </div>
-            ))}
-          </div>
+          <>
+            {/* Masonry-style responsive grid */}
+            <div className="columns-2 md:columns-3 gap-4 space-y-4">
+              {previewImages.map((src, i) => {
+                const allIndex = images.indexOf(src);
+                return (
+                  <a
+                    key={src}
+                    href={`#slika-${allIndex + 1}`}
+                    className="group relative block break-inside-avoid rounded-2xl overflow-hidden border border-[#e5ebe6] shadow-sm hover:shadow-xl transition-all duration-300"
+                  >
+                    <Image
+                      src={src}
+                      alt={`Tarin raj – slika ${allIndex + 1}`}
+                      width={800}
+                      height={600}
+                      className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                    />
+
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 p-3 bg-linear-to-t from-black/55 to-transparent">
+                      <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-2.5 py-1 text-white text-xs backdrop-blur-sm">
+                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#8ce6ae]" />
+                        Pogledaj
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+
+            {images.length > previewImages.length && (
+              <p className="mt-5 text-center text-sm text-[#6b7280]">
+                Prikazano {previewImages.length} od {images.length} slika. Kliknite na sliku za listanje cele galerije.
+              </p>
+            )}
+
+            {/* CSS-only lightbox carousel */}
+            {images.map((src, i) => {
+              const prevIndex = i === 0 ? images.length - 1 : i - 1;
+              const nextIndex = i === images.length - 1 ? 0 : i + 1;
+
+              return (
+                <div
+                  id={`slika-${i + 1}`}
+                  key={`lightbox-${src}`}
+                  className="fixed inset-0 z-100 hidden target:flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-6"
+                >
+                  <a
+                    href="#galerija"
+                    aria-label="Zatvori pregled"
+                    className="absolute inset-0 cursor-default"
+                  />
+
+                  <div className="relative z-10 w-full max-w-6xl">
+                    <div className="relative h-[52vh] min-h-70 max-h-170 sm:h-[58vh] rounded-2xl border border-white/20 bg-black/25 px-12 sm:px-16">
+                      <Image
+                        src={src}
+                        alt={`Tarin raj – slika ${i + 1}`}
+                        fill
+                        className="rounded-2xl object-contain p-2 sm:p-3"
+                        sizes="(max-width: 640px) 100vw, 1200px"
+                      />
+                    </div>
+
+                    <a
+                      href={`#slika-${prevIndex + 1}`}
+                      aria-label="Prethodna slika"
+                      className="absolute left-2 sm:left-4 top-[26vh] sm:top-[29vh] -translate-y-1/2 h-11 w-11 rounded-full bg-black/40 border border-white/25 text-white flex items-center justify-center hover:bg-black/60 transition-colors"
+                    >
+                      &#10094;
+                    </a>
+
+                    <a
+                      href={`#slika-${nextIndex + 1}`}
+                      aria-label="Sledeća slika"
+                      className="absolute right-2 sm:right-4 top-[26vh] sm:top-[29vh] -translate-y-1/2 h-11 w-11 rounded-full bg-black/40 border border-white/25 text-white flex items-center justify-center hover:bg-black/60 transition-colors"
+                    >
+                      &#10095;
+                    </a>
+
+                    <div className="mt-4 flex items-center justify-between gap-3 text-white">
+                      <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-sm backdrop-blur-sm">
+                        {i + 1} / {images.length}
+                      </div>
+
+                      <a
+                        href={`#slika-${prevIndex + 1}`}
+                        aria-label="Prethodna slika"
+                        className="hidden sm:inline-flex px-4 py-2 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 transition-colors"
+                      >
+                        ← Prethodna
+                      </a>
+
+                      <a
+                        href={`#slika-${nextIndex + 1}`}
+                        aria-label="Sledeća slika"
+                        className="hidden sm:inline-flex px-4 py-2 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 transition-colors"
+                      >
+                        Sledeća →
+                      </a>
+
+                      <a
+                        href="#galerija"
+                        aria-label="Zatvori pregled"
+                        className="inline-flex px-4 py-2 rounded-full border border-white/20 bg-black/35 text-white text-sm hover:bg-black/55 transition-colors"
+                      >
+                        Zatvori
+                      </a>
+                    </div>
+
+                    <div className="mx-auto mt-3 w-full max-w-5xl overflow-hidden rounded-xl border border-white/15 bg-black/25 px-2 py-2">
+                      <div className="flex items-center justify-start gap-2 overflow-x-auto [scrollbar-width:none]">
+                      {images.slice(0, 12).map((thumbSrc, thumbIndex) => (
+                        <a
+                          key={`thumb-${thumbSrc}`}
+                          href={`#slika-${thumbIndex + 1}`}
+                          aria-label={`Otvori sliku ${thumbIndex + 1}`}
+                          className={`relative h-14 w-24 shrink-0 overflow-hidden rounded-lg border transition-all ${
+                            thumbIndex === i
+                              ? "border-white shadow-lg"
+                              : "border-white/30 opacity-75 hover:opacity-100"
+                          }`}
+                        >
+                          <Image
+                            src={thumbSrc}
+                            alt={`Umanjeni prikaz ${thumbIndex + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="80px"
+                          />
+                        </a>
+                      ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </>
         )}
 
-        <p className="mt-8 text-center text-sm text-[#9ca3af]">
-          Dodajte slike u <code className="font-mono bg-gray-100 px-1 rounded">public/gallery/</code> folder da bi se prikazale ovde.
-        </p>
       </div>
     </section>
   );
