@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 
 type GalleryLightboxProps = {
@@ -13,6 +13,21 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   const isOpen = activeIndex !== null;
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, [isOpen]);
 
   const openImage = (index: number) => setActiveIndex(index);
   const closeLightbox = () => setActiveIndex(null);
@@ -135,7 +150,7 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
       </div>
 
       {isOpen && activeIndex !== null && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-6">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-6 overscroll-none">
           <button
             type="button"
             aria-label="Zatvori pregled"
@@ -147,7 +162,7 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
             <div
               onTouchStart={onTouchStart}
               onTouchEnd={onTouchEnd}
-              className="relative h-[52vh] min-h-70 max-h-170 sm:h-[58vh] rounded-2xl border border-white/20 bg-black/25 px-12 sm:px-16"
+              className="relative h-[52vh] min-h-70 max-h-170 sm:h-[58vh] rounded-2xl border border-white/20 bg-black/25 px-12 sm:px-16 touch-pan-x"
             >
               <Image
                 src={images[activeIndex]}
@@ -162,7 +177,7 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
               type="button"
               onClick={showPrev}
               aria-label="Prethodna slika"
-              className="absolute left-2 sm:left-4 top-[26vh] sm:top-[29vh] -translate-y-1/2 h-11 w-11 rounded-full bg-black/40 border border-white/25 text-white flex items-center justify-center hover:bg-black/60 transition-colors"
+              className="hidden sm:flex absolute left-2 sm:left-4 top-[26vh] sm:top-[29vh] -translate-y-1/2 h-11 w-11 rounded-full bg-black/40 border border-white/25 text-white items-center justify-center hover:bg-black/60 transition-colors"
             >
               &#10094;
             </button>
@@ -171,7 +186,7 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
               type="button"
               onClick={showNext}
               aria-label="Sledeća slika"
-              className="absolute right-2 sm:right-4 top-[26vh] sm:top-[29vh] -translate-y-1/2 h-11 w-11 rounded-full bg-black/40 border border-white/25 text-white flex items-center justify-center hover:bg-black/60 transition-colors"
+              className="hidden sm:flex absolute right-2 sm:right-4 top-[26vh] sm:top-[29vh] -translate-y-1/2 h-11 w-11 rounded-full bg-black/40 border border-white/25 text-white items-center justify-center hover:bg-black/60 transition-colors"
             >
               &#10095;
             </button>
