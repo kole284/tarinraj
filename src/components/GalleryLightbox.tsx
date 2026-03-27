@@ -161,7 +161,7 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
             <div
               onTouchStart={onTouchStart}
               onTouchEnd={onTouchEnd}
-              className="relative w-full aspect-4/3 sm:aspect-auto sm:h-[72vh] sm:max-h-[86vh] overflow-hidden rounded-2xl border border-white/15 bg-black/35 shadow-2xl touch-pan-x"
+              className="relative w-full aspect-5/4 sm:aspect-auto sm:h-[76vh] sm:max-h-[88vh] overflow-hidden rounded-2xl border border-white/15 bg-black/35 shadow-2xl touch-pan-x"
             >
               <img
                 src={images[activeIndex]}
@@ -207,7 +207,7 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
               </button>
             </div>
 
-            <div className="mx-auto mt-2 w-full max-w-6xl overflow-hidden rounded-xl border border-white/15 bg-black/30 px-2 py-2">
+            <div className="mx-auto mt-2 w-fit max-w-[92vw] sm:max-w-[80vw] md:max-w-4xl overflow-hidden rounded-xl border border-white/15 bg-black/30 px-2 py-2">
               <div className="flex items-center justify-start gap-2 overflow-x-auto [scrollbar-width:none]">
                 {images.slice(0, 12).map((thumbSrc, thumbIndex) => (
                   <button
@@ -215,7 +215,7 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
                     type="button"
                     onClick={() => openImage(thumbIndex)}
                     aria-label={`Otvori sliku ${thumbIndex + 1}`}
-                    className={`relative h-16 w-24 sm:h-18 sm:w-28 md:h-20 md:w-32 shrink-0 overflow-hidden rounded-lg border transition-all ${
+                    className={`relative h-14 w-20 sm:h-16 sm:w-24 md:h-18 md:w-28 shrink-0 overflow-hidden rounded-lg border transition-all ${
                       thumbIndex === activeIndex
                         ? "border-white shadow-lg opacity-100"
                         : "border-white/30 opacity-70 hover:opacity-100"
