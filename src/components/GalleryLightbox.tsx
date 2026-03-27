@@ -1,7 +1,7 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 
 type GalleryLightboxProps = {
   images: string[];
@@ -87,7 +87,7 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
         </div>
 
         {images.length === 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
@@ -113,21 +113,20 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
           </div>
         ) : (
           <>
-            <div className="columns-2 md:columns-3 gap-4 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {previewImages.map((src, i) => (
                 <button
                   key={src}
                   type="button"
                   onClick={() => openImage(i)}
-                  className="group relative block w-full break-inside-avoid rounded-2xl overflow-hidden border border-[#e5ebe6] shadow-sm hover:shadow-xl transition-all duration-300"
+                  className="group relative block w-full aspect-4/3 rounded-2xl overflow-hidden border border-[#e5ebe6] shadow-sm hover:shadow-xl transition-all duration-300"
                 >
-                  <Image
+                  <img
                     src={src}
                     alt={`Tarin raj – slika ${i + 1}`}
-                    width={800}
-                    height={600}
-                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    sizes="(max-width: 768px) 50vw, 33vw"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    loading="lazy"
+                    decoding="async"
                   />
 
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 p-3 bg-linear-to-t from-black/55 to-transparent">
@@ -150,7 +149,7 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
       </div>
 
       {isOpen && activeIndex !== null && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-6 overscroll-none">
+        <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 backdrop-blur-md p-2 sm:p-6 overscroll-none">
           <button
             type="button"
             aria-label="Zatvori pregled"
@@ -158,26 +157,28 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
             className="absolute inset-0 cursor-default"
           />
 
-          <div className="relative z-10 w-full max-w-6xl">
+          <div className="relative z-10 w-full max-w-7xl">
             <div
               onTouchStart={onTouchStart}
               onTouchEnd={onTouchEnd}
-              className="relative h-[52vh] min-h-70 max-h-170 sm:h-[58vh] rounded-2xl border border-white/20 bg-black/25 px-12 sm:px-16 touch-pan-x"
+              className="relative w-full aspect-4/3 sm:aspect-auto sm:h-[72vh] sm:max-h-[86vh] overflow-hidden rounded-2xl border border-white/15 bg-black/35 shadow-2xl touch-pan-x"
             >
-              <Image
+              <img
                 src={images[activeIndex]}
                 alt={`Tarin raj – slika ${activeIndex + 1}`}
-                fill
-                className="rounded-2xl object-contain p-2 sm:p-3"
-                sizes="(max-width: 640px) 100vw, 1200px"
+                className="h-full w-full object-cover"
+                loading="eager"
+                decoding="async"
               />
+
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 rounded-b-2xl bg-linear-to-t from-black/45 to-transparent" />
             </div>
 
             <button
               type="button"
               onClick={showPrev}
               aria-label="Prethodna slika"
-              className="hidden sm:flex absolute left-2 sm:left-4 top-[26vh] sm:top-[29vh] -translate-y-1/2 h-11 w-11 rounded-full bg-black/40 border border-white/25 text-white items-center justify-center hover:bg-black/60 transition-colors"
+              className="hidden sm:flex absolute left-3 md:left-5 top-1/2 -translate-y-1/2 h-11 w-11 md:h-12 md:w-12 rounded-full bg-black/45 border border-white/25 text-white items-center justify-center hover:bg-black/65 transition-colors"
             >
               &#10094;
             </button>
@@ -186,12 +187,12 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
               type="button"
               onClick={showNext}
               aria-label="Sledeća slika"
-              className="hidden sm:flex absolute right-2 sm:right-4 top-[26vh] sm:top-[29vh] -translate-y-1/2 h-11 w-11 rounded-full bg-black/40 border border-white/25 text-white items-center justify-center hover:bg-black/60 transition-colors"
+              className="hidden sm:flex absolute right-3 md:right-5 top-1/2 -translate-y-1/2 h-11 w-11 md:h-12 md:w-12 rounded-full bg-black/45 border border-white/25 text-white items-center justify-center hover:bg-black/65 transition-colors"
             >
               &#10095;
             </button>
 
-            <div className="mt-4 flex items-center justify-between gap-3 text-white">
+            <div className="mt-3 flex items-center justify-between gap-3 text-white">
               <div className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-sm backdrop-blur-sm">
                 {activeIndex + 1} / {images.length}
               </div>
@@ -206,7 +207,7 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
               </button>
             </div>
 
-            <div className="mx-auto mt-3 w-full max-w-5xl overflow-hidden rounded-xl border border-white/15 bg-black/25 px-2 py-2">
+            <div className="mx-auto mt-2 w-full max-w-6xl overflow-hidden rounded-xl border border-white/15 bg-black/30 px-2 py-2">
               <div className="flex items-center justify-start gap-2 overflow-x-auto [scrollbar-width:none]">
                 {images.slice(0, 12).map((thumbSrc, thumbIndex) => (
                   <button
@@ -214,18 +215,18 @@ export default function GalleryLightbox({ images }: GalleryLightboxProps) {
                     type="button"
                     onClick={() => openImage(thumbIndex)}
                     aria-label={`Otvori sliku ${thumbIndex + 1}`}
-                    className={`relative h-14 w-24 shrink-0 overflow-hidden rounded-lg border transition-all ${
+                    className={`relative h-16 w-24 sm:h-18 sm:w-28 md:h-20 md:w-32 shrink-0 overflow-hidden rounded-lg border transition-all ${
                       thumbIndex === activeIndex
-                        ? "border-white shadow-lg"
-                        : "border-white/30 opacity-75 hover:opacity-100"
+                        ? "border-white shadow-lg opacity-100"
+                        : "border-white/30 opacity-70 hover:opacity-100"
                     }`}
                   >
-                    <Image
+                    <img
                       src={thumbSrc}
                       alt={`Umanjeni prikaz ${thumbIndex + 1}`}
-                      fill
-                      className="object-cover"
-                      sizes="80px"
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </button>
                 ))}

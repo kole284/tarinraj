@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "npm run images:prepare && next dev",
+    "build": "npm run images:prepare && next build",
+    "images:prepare": "node scripts/preconvert-heif.mjs",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "heic-convert": "^2.1.0",
     "lightningcss-linux-x64-gnu": "^1.31.1",
     "next": "16.1.6",
     "react": "19.2.3",

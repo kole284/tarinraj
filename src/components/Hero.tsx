@@ -5,8 +5,13 @@ export default function Hero() {
       className="relative flex items-center justify-center min-h-screen overflow-hidden"
     >
       <div
-        className="absolute inset-0 -z-10 bg-cover bg-center"
-        style={{ backgroundImage: "url('/naslovna.png')" }}
+        className="absolute inset-0 -z-10 bg-cover bg-center md:hidden"
+        style={{ backgroundImage: "url('/naslovna-mobile.jpg')" }}
+      />
+
+      <div
+        className="absolute inset-0 -z-10 hidden bg-cover bg-center md:block"
+        style={{ backgroundImage: "url('/naslovna.jpg')" }}
       />
 
       <div
